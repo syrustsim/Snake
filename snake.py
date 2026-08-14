@@ -4,8 +4,8 @@ import random
 class Snake:
 
     def __init__(self):
-        self.head_snake_x = random.randint(100,700)
-        self.head_snake_y = 500
+        self.head_snake_x = random.randint(100,500)
+        self.head_snake_y = 250
         self.move_left = False
         self.move_right = False
         self.move_up = False
@@ -13,42 +13,65 @@ class Snake:
         self.speed = 3
         self.height = 25
         self.width = 25
+        self.x_change = 0
+        self.y_change = 0
         self.body_list = []
 
     def draw_snake(self, screen):
         GREEN = (0, 255, 0)
         pygame.draw.rect(screen, GREEN, (self.head_snake_x, self.head_snake_y, self.width, self.height))
+        for body in self.body_list:
+            pygame.draw.rect(screen, GREEN, (body[0], body[1], self.width, self.height))
 
-    def move(self, event, screen):
+
+    def move(self, event, screen, collision):
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
+            if event.key == pygame.K_LEFT and self.move_right == False:
+                self.x_change = -25
+                self.y_change = 0 
+                if self.move_left == False:
+                    self.head_snake_x = round(self.head_snake_x / 25) * 25
                 self.move_left = True
-            if event.key == pygame.K_RIGHT:
-                self.move_right = True
-            if event.key == pygame.K_UP:
-                self.move_up = True
-            if event.key == pygame.K_DOWN:
-                self.move_down = True
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT:
-                self.move_left = False
-            if event.key == pygame.K_RIGHT:
                 self.move_right = False
-            if event.key == pygame.K_UP:
                 self.move_up = False
-            if event.key == pygame.K_DOWN:
                 self.move_down = False
-        direction = pygame.math.Vector2(0,0)
-        if self.move_left:
-            direction.x -= 1
-        if self.move_right:
-            direction.x += 1
-        if self.move_up:
-            direction.y -= 1
-        if self.move_down:
-            direction.y += 1
-        if direction.length() > 0:
-            direction = direction.normalize()*self.speed
-        self.head_snake_x += direction.x
-        self.head_snake_y += direction.y
+                
+            if event.key == pygame.K_RIGHT and self.move_left == False:
+                self.x_change = 25
+                self.y_change = 0
+                if self.move_right == False:
+                    self.head_snake_x = round(self.head_snake_x / 25) * 25
+                self.move_right = True
+                self.move_up = False
+                self.move_down = False
+                self.move_left = False
+                
+            if event.key == pygame.K_UP and self.move_down == False:
+                self.y_change = -25
+                self.x_change = 0
+                if self.move_up == False:
+                    self.head_snake_y = round(self.head_snake_y / 25) * 25
+                self.move_up = True
+                self.move_right = False
+                self.move_left = False
+                self.move_down = False
+                
+            if event.key == pygame.K_DOWN and self.move_up == False:
+                self.y_change = 25
+                self.x_change = 0
+                if self.move_down == False:
+                    self.head_snake_y = round(self.head_snake_y / 25) * 25
+                self.move_down = True
+                self.move_right = False
+                self.move_left = False
+                self.move_up = False
+        self.body_list.insert(0, [self.head_snake_x, self.head_snake_y])
+        self.head_snake_x += self.x_change
+        self.head_snake_y += self.y_change
+
+        if collision == False: 
+            self.body_list.pop(-1)
+            
+
+
 
