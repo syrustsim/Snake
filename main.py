@@ -10,7 +10,7 @@ apple = Apple()
 clock = pygame.time.Clock()
 
 def check_collision_player_contacted_wall():
-    if snake.head_snake_x <= 0 or snake.head_snake_x >= 600 or snake.head_snake_y <= 0 or snake.head_snake_y >= 500:
+    if snake.head_snake_x < 0 or snake.head_snake_x > 600 or snake.head_snake_y < 0 or snake.head_snake_y > 500:
         return True
     else:
         return False
@@ -20,6 +20,12 @@ def check_collision_player_contacted_apple():
         return True
     else:
         return False
+
+def check_collision_snake_touch_snake():
+    for body in snake.body_list:
+        if snake.head_snake_x == body[0] and snake.head_snake_y == body[1]:
+            return True
+    return False
 
 def gameover():
     screen.fill((56,56,59))
@@ -44,6 +50,9 @@ while running:
     if check_collision_player_contacted_wall() == True:
         gameover()
         pausing = True
+    if check_collision_snake_touch_snake() == True:
+        gameover()
+        pausing = True
     if check_collision_player_contacted_apple() == True:
         score = score + 1
         apple.teleportation_apple()
@@ -57,4 +66,4 @@ while running:
     
         
     pygame.display.update()
-    clock.tick(10)
+    clock.tick(5)
