@@ -1,10 +1,9 @@
 import pygame
-import random
 
 class Snake:
 
     def __init__(self):
-        self.head_snake_x = random.randint(100,500)
+        self.head_snake_x = 250
         self.head_snake_y = 250
         self.move_left = False
         self.move_right = False
@@ -29,8 +28,6 @@ class Snake:
             if event.key == pygame.K_LEFT and self.move_right == False:
                 self.x_change = -25
                 self.y_change = 0 
-                if self.move_left == False:
-                    self.head_snake_x = round(self.head_snake_x / 25) * 25
                 self.move_left = True
                 self.move_right = False
                 self.move_up = False
@@ -39,8 +36,6 @@ class Snake:
             if event.key == pygame.K_RIGHT and self.move_left == False:
                 self.x_change = 25
                 self.y_change = 0
-                if self.move_right == False:
-                    self.head_snake_x = round(self.head_snake_x / 25) * 25
                 self.move_right = True
                 self.move_up = False
                 self.move_down = False
@@ -49,8 +44,6 @@ class Snake:
             if event.key == pygame.K_UP and self.move_down == False:
                 self.y_change = -25
                 self.x_change = 0
-                if self.move_up == False:
-                    self.head_snake_y = round(self.head_snake_y / 25) * 25
                 self.move_up = True
                 self.move_right = False
                 self.move_left = False
@@ -59,8 +52,6 @@ class Snake:
             if event.key == pygame.K_DOWN and self.move_up == False:
                 self.y_change = 25
                 self.x_change = 0
-                if self.move_down == False:
-                    self.head_snake_y = round(self.head_snake_y / 25) * 25
                 self.move_down = True
                 self.move_right = False
                 self.move_left = False
