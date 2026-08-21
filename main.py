@@ -1,4 +1,5 @@
 import pygame
+import asyncio
 from snake import Snake 
 from apple import Apple
 pygame.init()
@@ -48,33 +49,39 @@ def restart():
 score = 0
 
 pausing = False
-running = True 
-while running:
-    screen.fill((56,56,59))
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        if event.type == pygame.KEYDOWN:
-                if pausing == True and event.key == pygame.K_SPACE:
-                    restart()
-    if check_collision_player_contacted_wall() == True:
-        gameover()
-        pausing = True
-    if check_collision_snake_touch_snake() == True:
-        gameover()
-        pausing = True
-    if check_collision_player_contacted_apple() == True:
-        score = score + 1
-        apple.teleportation_apple()
-        snake.move(event)
-        snake.grow_snake()
-    else:
-         snake.move(event)
-    if pausing == False:
-        show_score()
-        snake.draw_snake(screen)
-        apple.draw_apple(screen)
-    
+async def main():
+    global score, pausing
+    running = True 
+    while running:
+        screen.fill((56,56,59))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.KEYDOWN:
+                    if pausing == True and event.key == pygame.K_SPACE:
+                        restart()
+                    else:
+                        snake.handle_input(event.key)
+        if check_collision_player_contacted_wall() == True:
+            gameover()
+            pausing = True
+        if check_collision_snake_touch_snake() == True:
+            gameover()
+            pausing = True
+        if check_collision_player_contacted_apple() == True:
+            score = score + 1
+            apple.teleportation_apple()
+            snake.move()
+            snake.grow_snake()
+        else:
+            snake.move()
+        if pausing == False:
+            show_score()
+            snake.draw_snake(screen)
+            apple.draw_apple(screen)
         
-    pygame.display.update()
-    clock.tick(60)
+            
+        pygame.display.update()
+        clock.tick(60)
+        await asyncio.sleep(0)
+asyncio.run(main())

@@ -10,6 +10,8 @@ class Snake:
         self.width = 25
         self.x_change = 0
         self.y_change = 0
+        self.next_y_change = 0 
+        self.next_x_change = 0
         self.body_list = []
         self.growth_pending = 0
 
@@ -21,27 +23,30 @@ class Snake:
 
     def grow_snake(self):
         self.growth_pending += 5
+    
+    def handle_input(self, key):
+        if key == pygame.K_LEFT and self.x_change == 0:
+            self.next_x_change = -5
+            self.next_y_change = 0 
 
-
-    def move(self, event):
-        if self.head_snake_x % 25 == 0 and self.head_snake_y % 25 == 0:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT and self.x_change == 0:
-                    self.x_change = -5
-                    self.y_change = 0 
-
-                if event.key == pygame.K_RIGHT and self.x_change == 0:
-                    self.x_change = 5
-                    self.y_change = 0
-                    
-                if event.key == pygame.K_UP and self.y_change == 0:
-                    self.y_change = -5
-                    self.x_change = 0
-                    
-                if event.key == pygame.K_DOWN and self.y_change == 0:
-                    self.y_change = 5
-                    self.x_change = 0
+        elif key == pygame.K_RIGHT and self.x_change == 0:
+            self.next_x_change = 5
+            self.next_y_change = 0
             
+        elif key == pygame.K_UP and self.y_change == 0:
+            self.next_x_change = 0
+            self.next_y_change = -5
+            
+        elif key == pygame.K_DOWN and self.y_change == 0:
+            self.next_x_change = 0
+            self.next_y_change = 5
+
+
+    def move(self):
+        if self.head_snake_x % 25 == 0 and self.head_snake_y % 25 == 0:
+            self.x_change = self.next_x_change
+            self.y_change = self.next_y_change
+
         self.body_list.insert(0, [self.head_snake_x, self.head_snake_y])
         self.head_snake_x += self.x_change
         self.head_snake_y += self.y_change
